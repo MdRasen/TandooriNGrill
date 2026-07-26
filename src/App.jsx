@@ -1,5 +1,18 @@
+import "./App.css";
+import Navbar from "./sections/Navbar";
+import Hero from "./sections/Hero";
+import Menu from "./sections/Menu";
+import Footer from "./sections/Footer";
+
 const App = () => {
-  return <div>App</div>;
+  return (
+    <>
+      <Navbar />
+      <Hero />
+      <Menu />
+      <Footer />
+    </>
+  );
 };
 
 export default App;
