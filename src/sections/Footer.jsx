@@ -14,7 +14,7 @@ const Footer = () => {
 
           {/* QUICK LINKS */}
 
-          <div className="col-lg-2 col-md-6">
+          <div className="col-lg-2 col-md-6 quick-links-mob">
             <h4>Quick Links</h4>
 
             <ul>

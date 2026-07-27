@@ -365,6 +365,7 @@
   .logo {
     width: 100%;
     text-align: center;
+    margin-right: 0;
   }
 
   .hero-section {
@@ -495,5 +496,9 @@
   }
   .footer-bottom {
     padding-bottom: 40px;
+  }
+
+  .quick-links-mob {
+    display: none;
   }
 }
