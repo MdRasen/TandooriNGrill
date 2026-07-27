@@ -67,7 +67,8 @@ const Footer = () => {
 
         <div className="footer-bottom">
           <p>
-            © 2026 Tandoori & Grill. All Rights Reserved | Developed by{" "}
+            © {new Date().getFullYear()} Tandoori & Grill. All Rights Reserved |
+            Developed by{" "}
             <a href="https://mdrasen.bio.link/" target="_blank">
               devRasen
             </a>
