@@ -123,7 +123,7 @@ const Menu = () => {
               >
                 <div className="food-card">
                   <div className="food-img">
-                    <img src={item.imgPath} alt={item.name} />
+                    <img src={item.imgPath} alt={item.name} loading="lazy" />
                   </div>
                   <div className="food-content">
                     <h3>{item.name}</h3>
