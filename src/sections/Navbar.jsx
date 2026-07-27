@@ -1,6 +1,6 @@
 import MobileNav from "../components/MobileNav";
 
-const Navbar = () => {
+const Navbar = ({ activeSection, setActiveSection }) => {
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar">
@@ -23,23 +23,31 @@ const Navbar = () => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <a className="nav-link active" href="#hero">
+                <a
+                  className={`nav-link ${activeSection === "hero" ? "active" : ""}`}
+                  href="#hero"
+                  onClick={() => setActiveSection("hero")}
+                >
                   Home
                 </a>
               </li>
 
               <li className="nav-item">
-                <a className="nav-link" href="#menu">
+                <a
+                  className={`nav-link ${activeSection === "menu" ? "active" : ""}`}
+                  href="#menu"
+                  onClick={() => setActiveSection("menu")}
+                >
                   Menu
                 </a>
               </li>
 
-              {/* <li className="nav-item">
-              <a className="nav-link" href="reservation.html">Reservation</a>
-            </li> */}
-
               <li className="nav-item">
-                <a className="nav-link" href="#footer">
+                <a
+                  className={`nav-link ${activeSection === "footer" ? "active" : ""}`}
+                  href="#footer"
+                  onClick={() => setActiveSection("footer")}
+                >
                   Contact
                 </a>
               </li>
@@ -48,8 +56,11 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile Bottom Navbar */}
-      <MobileNav />
+      {/* Pass the props down to MobileNav as well */}
+      <MobileNav
+        activeSection={activeSection}
+        setActiveSection={setActiveSection}
+      />
     </>
   );
 };

@@ -1,4 +1,87 @@
+import { useState, useEffect } from "react";
+import { menuItems } from "../constants/index"; // Ensure this path matches your folder structure
+
+// =========================
+// Helper Component for Animation
+// =========================
+const AnimatedMenuCard = ({ itemCategory, filterValue, children }) => {
+  // Check if this card matches the active filter on initial load
+  const isVisible = filterValue === itemCategory;
+
+  // Set the initial style based on whether it should be visible right away
+  const [style, setStyle] = useState({
+    display: isVisible ? "block" : "none",
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? "scale(1)" : "scale(0.9)",
+  });
+
+  useEffect(() => {
+    let timer;
+    // Removed the "all" check completely
+    if (filterValue === itemCategory) {
+      // 1. Set display block immediately
+      setStyle((prev) => ({ ...prev, display: "block" }));
+
+      // 2. Small animation effect after 50ms
+      timer = setTimeout(() => {
+        setStyle({ display: "block", opacity: 1, transform: "scale(1)" });
+      }, 50);
+    } else {
+      // 1. Start hiding animation immediately
+      setStyle((prev) => ({ ...prev, opacity: 0, transform: "scale(0.9)" }));
+
+      // 2. Wait 300ms for animation to finish before setting display: none
+      timer = setTimeout(() => {
+        setStyle((prev) => ({ ...prev, display: "none" }));
+      }, 300);
+    }
+
+    // Cleanup timer on unmount or re-render
+    return () => clearTimeout(timer);
+  }, [filterValue, itemCategory]);
+
+  return (
+    <div
+      className="col-lg-4 col-md-6 menu-item-card"
+      data-category={itemCategory}
+      style={style}
+    >
+      {children}
+    </div>
+  );
+};
+
+// =========================
+// Main Menu Component
+// =========================
 const Menu = () => {
+  // Get all category keys (e.g., ['antipasti', 'naan', 'biryani', ...])
+  const categoryKeys = Object.keys(menuItems);
+
+  // State to track the active filter (Defaults to the first item: 'antipasti')
+  const [filter, setFilter] = useState(
+    categoryKeys.length > 0 ? categoryKeys[0] : "",
+  );
+
+  // Format object keys into readable tab labels (e.g., "piatti_di_pollo" -> "Piatti Di Pollo")
+  const formatCategoryName = (key) => {
+    return key
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  // Generate category tabs dynamically (Removed the "All" tab)
+  const categories = categoryKeys.map((key) => ({
+    label: formatCategoryName(key),
+    value: key,
+  }));
+
+  // Flatten the nested object into a single array of items, attaching their parent category
+  const allFlattenedItems = Object.entries(menuItems).flatMap(
+    ([category, items]) => items.map((item) => ({ ...item, category })),
+  );
+
   return (
     <>
       <section id="menu" className="category-section">
@@ -11,204 +94,71 @@ const Menu = () => {
           </div>
         </div>
 
-        {/* ADDED data-filter attributes to buttons */}
+        {/* Dynamic Filter Buttons */}
         <div className="category-tabs">
-          <button className="active" data-filter="all">
-            All
-          </button>
-          <button data-filter="starters">Starters</button>
-          <button data-filter="main-course">Main Course</button>
-          <button data-filter="desserts">Desserts</button>
-          <button data-filter="drinks">Drinks</button>
+          {categories.map((cat) => (
+            <button
+              key={cat.value}
+              className={filter === cat.value ? "active" : ""}
+              onClick={() => setFilter(cat.value)}
+              data-filter={cat.value}
+            >
+              {cat.label}
+            </button>
+          ))}
         </div>
         <div className="gold-line"></div>
       </section>
 
-      <section className="food-section" id="menu">
+      <section className="food-section">
         <div className="container">
           <div className="row g-4" id="food-grid">
-            <div
-              className="col-lg-4 col-md-6 menu-item-card"
-              data-category="main-course"
-            >
-              <div className="food-card">
-                <div className="food-img">
-                  <img src="./images/menu/BEEF BIRYANI.jpg" alt="Biryani" />
-                </div>
-                <div className="food-content">
-                  <h3>Hyderabadi Biryani</h3>
-                  <p>
-                    Aromatic basmati rice layered with rich spices and tender
-                    meat.
-                  </p>
-                  <div className="allergens-price-btn">
-                    <span>
-                      Allergens:
-                      <div className="icons">
-                        <img src="images/menu/icons/chilli-48.png" alt="" />
-                        <img src="images/menu/icons/corn-48.png" alt="" />
-                        <img src="images/menu/icons/egg-48.png" alt="" />
-                        <img src="images/menu/icons/fish-48.png" alt="" />
-                      </div>
-                    </span>
-                    <button>€ 10.00</button>
+            {/* Map through all flattened items dynamically */}
+            {allFlattenedItems.map((item, index) => (
+              <AnimatedMenuCard
+                key={index}
+                itemCategory={item.category}
+                filterValue={filter}
+              >
+                <div className="food-card">
+                  <div className="food-img">
+                    <img src={item.imgPath} alt={item.name} />
+                  </div>
+                  <div className="food-content">
+                    <h3>{item.name}</h3>
+                    <p>{item.description}</p>
+                    <div className="allergens-price-btn">
+                      <span>
+                        Allergens:
+                        <div className="icons">
+                          {item.allergens && item.allergens.length > 0 ? (
+                            item.allergens.map((allergen, i) => (
+                              <img
+                                key={i}
+                                src={allergen.imgPath}
+                                alt={allergen.name}
+                                title={allergen.name}
+                              />
+                            ))
+                          ) : (
+                            <span
+                              style={{
+                                fontSize: "14px",
+                                color: "#888",
+                                marginLeft: "5px",
+                              }}
+                            >
+                              None
+                            </span>
+                          )}
+                        </div>
+                      </span>
+                      <button>€ {item.price.toFixed(2)}</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            <div
-              className="col-lg-4 col-md-6 menu-item-card"
-              data-category="main-course"
-            >
-              <div className="food-card">
-                <div className="food-img">
-                  <img
-                    src="./images/menu/BUTTER CHICKEN.jpg"
-                    alt="Butter Chicken"
-                  />
-                </div>
-                <div className="food-content">
-                  <h3>Butter Chicken</h3>
-                  <p>
-                    Creamy tomato gravy infused with butter and Indian spices.
-                  </p>
-                  <div className="allergens-price-btn">
-                    <span>
-                      Allergens:
-                      <div className="icons">
-                        <img src="images/menu/icons/chilli-48.png" alt="" />
-                        <img src="images/menu/icons/corn-48.png" alt="" />
-                        <img src="images/menu/icons/egg-48.png" alt="" />
-                        <img src="images/menu/icons/fish-48.png" alt="" />
-                      </div>
-                    </span>
-                    <button>€ 10.00</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="col-lg-4 col-md-6 menu-item-card"
-              data-category="starters"
-            >
-              <div className="food-card">
-                <div className="food-img">
-                  <img
-                    src="./images/menu/CHICKEN TIKKA.jpg"
-                    alt="Paneer Tikka"
-                  />
-                </div>
-                <div className="food-content">
-                  <h3>Paneer Tikka</h3>
-                  <p>
-                    Char-grilled paneer cubes marinated with rich Indian masala.
-                  </p>
-                  <div className="allergens-price-btn">
-                    <span>
-                      Allergens:
-                      <div className="icons">
-                        <img src="images/menu/icons/chilli-48.png" alt="" />
-                        <img src="images/menu/icons/corn-48.png" alt="" />
-                        <img src="images/menu/icons/egg-48.png" alt="" />
-                        <img src="images/menu/icons/fish-48.png" alt="" />
-                      </div>
-                    </span>
-                    <button>€ 10.00</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="col-lg-4 col-md-6 menu-item-card"
-              data-category="starters"
-            >
-              <div className="food-card">
-                <div className="food-img">
-                  <img
-                    src="./images/menu/CHICKEN TANDOORI.jpg"
-                    alt="Tandoori"
-                  />
-                </div>
-                <div className="food-content">
-                  <h3>Tandoori Platter</h3>
-                  <p>Smoky tandoor specialties served with mint chutney.</p>
-                  <div className="allergens-price-btn">
-                    <span>
-                      Allergens:
-                      <div className="icons">
-                        <img src="images/menu/icons/chilli-48.png" alt="" />
-                        <img src="images/menu/icons/corn-48.png" alt="" />
-                        <img src="images/menu/icons/egg-48.png" alt="" />
-                        <img src="images/menu/icons/fish-48.png" alt="" />
-                      </div>
-                    </span>
-                    <button>€ 10.00</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="col-lg-4 col-md-6 menu-item-card"
-              data-category="starters"
-            >
-              <div className="food-card">
-                <div className="food-img">
-                  <img
-                    src="./images//menu/SHEEK KEBAB DI MANZO.jpg"
-                    alt="Kebab"
-                  />
-                </div>
-                <div className="food-content">
-                  <h3>Mughlai Kebabs</h3>
-                  <p>
-                    Juicy royal kebabs infused with Mughlai flavors and spices.
-                  </p>
-                  <div className="allergens-price-btn">
-                    <span>
-                      Allergens:
-                      <div className="icons">
-                        <img src="images/menu/icons/chilli-48.png" alt="" />
-                        <img src="images/menu/icons/corn-48.png" alt="" />
-                        <img src="images/menu/icons/egg-48.png" alt="" />
-                        <img src="images/menu/icons/fish-48.png" alt="" />
-                      </div>
-                    </span>
-                    <button>€ 10.00</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="col-lg-4 col-md-6 menu-item-card"
-              data-category="desserts"
-            >
-              <div className="food-card">
-                <div className="food-img">
-                  <img src="./images/menu/PANINO FALAFEL.jpg" alt="Falooda" />
-                </div>
-                <div className="food-content">
-                  <h3>Royal Falooda</h3>
-                  <p>Saffron infused falooda topped with nuts and kulfi.</p>
-                  <div className="allergens-price-btn">
-                    <span>
-                      Allergens:
-                      <div className="icons">
-                        <img src="images/menu/icons/chilli-48.png" alt="" />
-                        <img src="images/menu/icons/corn-48.png" alt="" />
-                        <img src="images/menu/icons/egg-48.png" alt="" />
-                        <img src="images/menu/icons/fish-48.png" alt="" />
-                      </div>
-                    </span>
-                    <button>€ 10.00</button>
-                  </div>
-                </div>
-              </div>
-            </div>
+              </AnimatedMenuCard>
+            ))}
           </div>
         </div>
       </section>
