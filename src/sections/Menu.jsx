@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { menuItems } from "../constants/index"; // Ensure this path matches your folder structure
+// import { menuItems } from "../constants/index";
 
 // =========================
 // Helper Component for Animation
@@ -55,7 +55,8 @@ const AnimatedMenuCard = ({ itemCategory, filterValue, children }) => {
 // Main Menu Component
 // =========================
 const Menu = () => {
-  // Get all category keys (e.g., ['antipasti', 'naan', 'biryani', ...])
+  // Grab the data from the global window object
+  const menuItems = window.AppMenuData || {};
   const categoryKeys = Object.keys(menuItems);
 
   // State to track the active filter (Defaults to the first item: 'antipasti')
