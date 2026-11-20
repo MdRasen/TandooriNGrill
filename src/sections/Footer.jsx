@@ -13,7 +13,6 @@ const Footer = () => {
           </div>
 
           {/* QUICK LINKS */}
-
           <div className="col-lg-2 col-md-6 quick-links-mob">
             <h4>Quick Links</h4>
 
@@ -33,7 +32,6 @@ const Footer = () => {
           </div>
 
           {/* CONTACT */}
-
           <div className="col-lg-3 col-md-6">
             <h4>Contact</h4>
 
@@ -43,33 +41,39 @@ const Footer = () => {
                 20124 Milano, Italy
               </li>
 
-              <li>+39 38943 15715</li>
+              <li>
+                <a href="tel:+393514260729" className="footer-contact-link">
+                  +39 351 426 0729
+                </a>
+              </li>
             </ul>
           </div>
 
           {/* OPENING HOURS */}
-
           <div className="col-lg-3 col-md-6">
             <h4>Opening Hours</h4>
 
             <ul>
               <li>
-                <strong>Open:</strong> Thursday – Friday
+                <strong>Open:</strong> Monday – Sunday
               </li>
               <li>
-                <strong>Hours:</strong> 10:00 AM – 12:00 PM
+                <strong>Hours:</strong> 11:00 AM – 11:30 PM
               </li>
             </ul>
           </div>
         </div>
 
         {/* COPYRIGHT */}
-
         <div className="footer-bottom">
           <p>
             © {new Date().getFullYear()} Tandoori & Grill. All Rights Reserved |
             Developed by{" "}
-            <a href="https://mdrasen.bio.link/" target="_blank">
+            <a
+              href="https://mdrasen.bio.link/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               devRasen
             </a>
           </p>

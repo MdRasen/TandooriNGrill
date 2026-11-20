@@ -1,10 +1,8 @@
 const MobileNav = ({ activeSection, setActiveSection }) => {
-  // Helper function to handle smooth scrolling in React
   const handleNavClick = (e, sectionId) => {
-    e.preventDefault(); // Stop the instant jump
-    setActiveSection(sectionId); // Set the active state immediately
+    e.preventDefault();
+    setActiveSection(sectionId);
 
-    // Find the section and scroll to it smoothly
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: "smooth" });
@@ -12,9 +10,10 @@ const MobileNav = ({ activeSection, setActiveSection }) => {
   };
 
   return (
-    <div className="mobile-bottom-nav">
+    <nav className="mobile-bottom-nav" aria-label="Mobile Navigation">
       <a
         href="#hero"
+        aria-label="Home"
         className={`nav-item-mobile ${activeSection === "hero" ? "active-mobile" : ""}`}
         onClick={(e) => handleNavClick(e, "hero")}
       >
@@ -24,6 +23,7 @@ const MobileNav = ({ activeSection, setActiveSection }) => {
 
       <a
         href="#menu"
+        aria-label="Menu"
         className={`nav-item-mobile ${activeSection === "menu" ? "active-mobile" : ""}`}
         onClick={(e) => handleNavClick(e, "menu")}
       >
@@ -33,13 +33,14 @@ const MobileNav = ({ activeSection, setActiveSection }) => {
 
       <a
         href="#footer"
+        aria-label="Contact"
         className={`nav-item-mobile ${activeSection === "footer" ? "active-mobile" : ""}`}
         onClick={(e) => handleNavClick(e, "footer")}
       >
         <i className="fa-solid fa-circle-info"></i>
         <span>Contact</span>
       </a>
-    </div>
+    </nav>
   );
 };
 

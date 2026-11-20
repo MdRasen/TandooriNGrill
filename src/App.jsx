@@ -9,33 +9,51 @@ const App = () => {
   const [activeSection, setActiveSection] = useState("hero");
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      // Query sections and the footer that have IDs
-      const sections = document.querySelectorAll("section[id], footer[id]");
-      let current = "";
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          // If scrolled close to the bottom of the page, activate footer
+          if (
+            window.innerHeight + window.scrollY >=
+            document.documentElement.scrollHeight - 80
+          ) {
+            setActiveSection("footer");
+            ticking = false;
+            return;
+          }
 
-      sections.forEach((section) => {
-        const sectionTop = section.offsetTop - 120;
-        const sectionHeight = section.offsetHeight;
+          const sections = document.querySelectorAll("section[id], footer[id]");
+          let current = "";
 
-        if (
-          window.scrollY >= sectionTop &&
-          window.scrollY < sectionTop + sectionHeight
-        ) {
-          current = section.getAttribute("id");
-        }
-      });
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop - 130;
+            const sectionHeight = section.offsetHeight;
 
-      if (current) {
-        setActiveSection(current);
+            if (
+              window.scrollY >= sectionTop &&
+              window.scrollY < sectionTop + sectionHeight
+            ) {
+              current = section.getAttribute("id");
+            }
+          });
+
+          if (current) {
+            setActiveSection(current);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
-    // Cleanup the event listener on component unmount
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   return (
     <>
       <Navbar

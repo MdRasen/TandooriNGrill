@@ -14,11 +14,10 @@ const Hero = () => {
 
               <div className="hero-buttons">
                 <a href="#menu" className="btn hero-btn1">
-                  {" "}
-                  Explore Menu{" "}
+                  Explore Menu
                 </a>
 
-                <a href="tel:+393894315715" className="btn hero-btn2">
+                <a href="tel:+393514260729" className="btn hero-btn2">
                   Book Table
                 </a>
               </div>
